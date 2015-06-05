@@ -68,7 +68,31 @@
     };
 
     function createIncludesParams(includes) {
-      return includes ? "?include=" + includes.join(",") : "?";
+      return includes ? "include=" + includes.join(",") : "";
+    }
+
+    function createFieldsParams(fields) {
+      var fieldsArray = [],
+          field = undefined;
+
+      if (!fields) {
+        return "";
+      }
+
+      for (field in fields) {
+        if (fields.hasOwnProperty(field)) {
+          fieldsArray.push("fields[" + field + "]=" + fields[field].join(","));
+        }
+      }
+
+      return fieldsArray.join("&");
+    }
+
+    function createParams(opts) {
+      var includes = opts.includes,
+          fields = opts.fields;
+
+      return "?" + createIncludesParams(includes) + "&" + createFieldsParams(opts.fields);
     }
 
     function endpointGenerator(baseEndpoint, errorStr) {
@@ -76,10 +100,10 @@
         var defer = $q.defer(),
             endpointError = errorStr || "",
             full_api = api + "/" + baseEndpoint,
-            includeParams = createIncludesParams(opts.includes),
+            params = createParams(opts),
             endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
-        full_api += endpoint + includeParams + jsonp_cb;
+        full_api += endpoint + params + jsonp_cb;
 
         $http.jsonp(full_api, { cache: true }).success(function (data) {
           defer.resolve(data);
