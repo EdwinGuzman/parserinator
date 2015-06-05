@@ -1,0 +1,1 @@
+To compile from ES6 just run `gulp`.
