@@ -1,0 +1,32 @@
+{
+  "name": "parserinator",
+  "description": "Parse that JSONAPI formatted API.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Edwin Guzman",
+    "email": "edwin.gzmn@gmail.com"
+  },
+  "contributors": [
+    {"name": "Edwin Guzman", "email": "edwin.gzmn@gmail.com"},
+    {"name": "Rafael Hernandez", "email": "rafaelhernandez@nypl.org"}
+  ],
+  "scripts": {
+    "tests": "karma start"
+  },
+  "devDependencies": {
+    "karma-jasmine": "^0.3.5",
+    "karma": "~0.12.31",
+    "karma-coverage": "^0.2.6",
+    "karma-junit-reporter": "~0.2.1",
+    "karma-chrome-launcher": "~0.1.2",
+    "karma-firefox-launcher": "~0.1.3",
+    "karma-script-launcher": "~0.1.0",
+    "karma-ng-html2js-preprocessor": "^0.1.0",
+    "jasmine-core": "^2.2.0",
+    "gulp": "~3.8.11",
+    "gulp-jshint": "~1.10.0",
+    "gulp-uglify": "~1.1.0",
+    "gulp-rename": "~1.2.2",
+    "gulp-babel": "^5.1.0"
+  }
+}
