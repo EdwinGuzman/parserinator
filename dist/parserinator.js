@@ -1,25 +1,27 @@
 /*jslint indent: 2, maxlen: 80, unparam: true */
 /*globals angular */
 
-;(() => {
+"use strict";
+
+;(function () {
 
   /** @namespace $jsonAPIProvider */
   function $jsonAPIProvider() {
-    const options = {
-        api_root: null,
-        api_version: null
-      };
+    var options = {
+      api_root: null,
+      api_version: null
+    };
 
-    this.setOptions = opts => {
+    this.setOptions = function (opts) {
       angular.extend(options, opts);
     };
 
-    this.$get = [() => {
-      let provider = {
-        generateApiUrl(options) {
-          let host = options.api_root,
-            version = options.api_version,
-            url;
+    this.$get = [function () {
+      var provider = {
+        generateApiUrl: function generateApiUrl(options) {
+          var host = options.api_root,
+              version = options.api_version,
+              url = undefined;
 
           if (!host || !version) {
             return undefined;
@@ -49,29 +51,29 @@
    * ...
    */
   function jsonAPIParser($http, $q, $jsonAPI) {
-    const api = $jsonAPI.full_api_url,
-      jsonp_cb = '&callback=JSON_CALLBACK',
-      apiError = 'Could not reach API';
+    var api = $jsonAPI.full_api_url,
+        jsonp_cb = "&callback=JSON_CALLBACK",
+        apiError = "Could not reach API";
 
-    let parser = {},
-      findInIncludes;
+    var parser = {},
+        findInIncludes = undefined;
 
     function includedGenerator(included) {
-      return data => {
+      return function (data) {
         return _.findWhere(included, {
-          'id': data.id,
-          'type': data.type
+          "id": data.id,
+          "type": data.type
         });
       };
     };
 
     function createIncludesParams(includes) {
-      return includes ? 'include=' + includes.join(',') : '';
+      return includes ? "include=" + includes.join(",") : "";
     }
 
     function createFieldsParams(fields) {
-      let fieldsArray = [],
-        field;
+      var fieldsArray = [],
+          field = undefined;
 
       if (!fields) {
         return "";
@@ -79,7 +81,7 @@
 
       for (field in fields) {
         if (fields.hasOwnProperty(field)) {
-          fieldsArray.push("fields[" + field + "]=" + fields[field].join(','));
+          fieldsArray.push("fields[" + field + "]=" + fields[field].join(","));
         }
       }
 
@@ -87,43 +89,40 @@
     }
 
     function createParams(opts) {
-      let includes = opts.includes,
-        fields = opts.fields;
+      var includes = opts.includes,
+          fields = opts.fields;
 
-      return "?" + createIncludesParams(includes) +
-        "&" + createFieldsParams(opts.fields);
+      return "?" + createIncludesParams(includes) + "&" + createFieldsParams(opts.fields);
     }
 
     function endpointGenerator(baseEndpoint, errorStr) {
-      return opts => {
-        let defer = $q.defer(),
-          endpointError = errorStr || '',
-          full_api = api + '/' + baseEndpoint,
-          params = createParams(opts),
-          endpoint = opts.endpoint ? '/' + opts.endpoint : '';
+      return function (opts) {
+        var defer = $q.defer(),
+            endpointError = errorStr || "",
+            full_api = api + "/" + baseEndpoint,
+            params = createParams(opts),
+            endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
         full_api += endpoint + params + jsonp_cb;
 
-        $http.jsonp(full_api, {cache: true})
-          .success(data => {
-            defer.resolve(data);
-          })
-          .error((data, status) => {
-            defer.reject(apiError + endpointError);
-          });
+        $http.jsonp(full_api, { cache: true }).success(function (data) {
+          defer.resolve(data);
+        }).error(function (data, status) {
+          defer.reject(apiError + endpointError);
+        });
 
         return defer.promise;
       };
     }
 
-    parser.get = (endpoint, errorStr) => {
+    parser.get = function (endpoint, errorStr) {
       return endpointGenerator(endpoint, errorStr);
     };
 
-    parser.parse = (apiData) => {
-      let data = apiData.data,
-        included = apiData.included ? apiData.included : [],
-        processedData;
+    parser.parse = function (apiData) {
+      var data = apiData.data,
+          included = apiData.included ? apiData.included : [],
+          processedData = undefined;
 
       findInIncludes = includedGenerator(included);
 
@@ -140,7 +139,7 @@
     };
 
     function createArrayModels(data) {
-      let dataModels = [];
+      var dataModels = [];
 
       _.each(data, function (datum) {
         dataModels.push(createObjectModel(datum));
@@ -150,20 +149,18 @@
     }
 
     function createObjectModel(data) {
-      let objectModel = angular.copy(data),
-        relationships = objectModel.relationships;
+      var objectModel = angular.copy(data),
+          relationships = objectModel.relationships;
 
       objectModel = createRelationships(objectModel, relationships);
 
       return objectModel;
     }
 
-    function makeHTTPRequest() {
-      // console.log('make http request?');
-    }
+    function makeHTTPRequest() {}
 
     function constructObjFromIncluded(linkageProperty) {
-      let dataObj = {};
+      var dataObj = {};
 
       dataObj = findInIncludes(linkageProperty);
 
@@ -175,11 +172,12 @@
     }
 
     function constructArrayFromIncluded(linkageProperty) {
-      let includedDataArray = [], dataObj = {};
+      var includedDataArray = [],
+          dataObj = {};
 
       // Loop through each object in the array and find the
       // corresponding data from the included array.
-      _.each(linkageProperty, linkageProp => {
+      _.each(linkageProperty, function (linkageProp) {
         dataObj = constructObjFromIncluded(linkageProp);
 
         if (dataObj) {
@@ -193,14 +191,14 @@
     }
 
     function createRelationships(objectModel, relationships) {
-      let includedDataObj = {},
-        includedDataArray = [],
-        linkageProperty,
-        key;
+      var includedDataObj = {},
+          includedDataArray = [],
+          linkageProperty = undefined,
+          key = undefined;
 
-      for (let rel in relationships) {
+      for (var rel in relationships) {
         if (relationships.hasOwnProperty(rel)) {
-          linkageProperty = relationships[rel]['data'];
+          linkageProperty = relationships[rel]["data"];
 
           // If it contains a linkage object property
           if (linkageProperty) {
@@ -233,7 +231,7 @@
 
     return parser;
   }
-  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI'];
+  jsonAPIParser.$inject = ["$http", "$q", "$jsonAPI"];
 
   /**
    * @ngdoc overview
@@ -242,9 +240,7 @@
    * @description
    * ..
    */
-  angular
-    .module('parserinator', [])
-    .provider('$jsonAPI', $jsonAPIProvider)
-    .factory('jsonAPIParser', jsonAPIParser);
+  angular.module("parserinator", []).provider("$jsonAPI", $jsonAPIProvider).factory("jsonAPIParser", jsonAPIParser);
+})();
 
-}());
+// console.log('make http request?');
