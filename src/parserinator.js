@@ -31,13 +31,54 @@
       };
       provider.full_api_url = provider.generateApiUrl(options);
 
-      function validProtocol(host) {
+      function validProtocol(host = "") {
         return host.indexOf("http://") === 0 || host.indexOf("https://") === 0;
       }
 
       return provider;
     }];
   }
+
+  /**
+   * @ngdoc service
+   * @name parserinator.service:urlGenerator
+   * @description
+   * Create URL strings for queries for JSONAPI formatted APIs.
+   */
+  function urlGenerator() {
+    const urlGenerator = {
+      createIncludesParams(includes) {
+        return includes ? `include=${includes.join(',')}` : '';
+      },
+      createFieldsParams(fields) {
+        let fieldsArray = [],
+          field;
+
+        if (!fields) {
+          return "";
+        }
+
+        for (field in fields) {
+          if (fields.hasOwnProperty(field)) {
+            fieldsArray.push(`fields[${field}]=${fields[field].join(',')}`);
+          }
+        }
+
+        return fieldsArray.join("&");
+      },
+      createParams(opts = {}) {
+        let includes = opts.includes,
+          fields = opts.fields,
+          fieldParams = this.createFieldsParams(fields),
+          sparseFields = fieldParams ? `&${fieldParams}` : ''; 
+
+        return "?" + this.createIncludesParams(includes) + sparseFields;
+      }
+    };
+
+    return urlGenerator;
+  }
+  urlGenerator.$inject = [];
 
   /**
    * @ngdoc service
@@ -48,15 +89,15 @@
    * @description
    * ...
    */
-  function jsonAPIParser($http, $q, $jsonAPI) {
+  function jsonAPIParser($http, $q, $jsonAPI, urlGenerator) {
     const api = $jsonAPI.full_api_url,
       jsonp_cb = '&callback=JSON_CALLBACK',
-      apiError = 'Could not reach API';
+      apiError = 'Could not reach API: ';
 
     let parser = {},
       findInIncludes;
 
-    function includedGenerator(included) {
+    function includedGenerator(included = []) {
       return data => {
         return _.findWhere(included, {
           'id': data.id,
@@ -65,42 +106,11 @@
       };
     };
 
-    function createIncludesParams(includes) {
-      return includes ? `include=${includes.join(',')}` : '';
-    }
-
-    function createFieldsParams(fields) {
-      let fieldsArray = [],
-        field;
-
-      if (!fields) {
-        return "";
-      }
-
-      for (field in fields) {
-        if (fields.hasOwnProperty(field)) {
-          fieldsArray.push(`fields[${field}]=${fields[field].join(',')}`);
-        }
-      }
-
-      return fieldsArray.join("&");
-    }
-
-    function createParams(opts) {
-      let includes = opts.includes,
-        fields = opts.fields,
-        fieldParams = createFieldsParams(fields),
-        sparseFields = fieldParams ? `&${fieldParams}` : ''; 
-
-      return "?" + createIncludesParams(includes) + sparseFields;
-    }
-
-    function endpointGenerator(baseEndpoint, errorStr) {
-      return opts => {
+    function endpointGenerator(baseEndpoint, errorStr = 'API Error') {
+      return (opts = {}) => {
         let defer = $q.defer(),
-          endpointError = errorStr || '',
           full_api = api + '/' + baseEndpoint,
-          params = createParams(opts),
+          params = urlGenerator.createParams(opts),
           endpoint = opts.endpoint ? '/' + opts.endpoint : '';
 
         full_api += endpoint + params + jsonp_cb;
@@ -111,7 +121,7 @@
             defer.resolve(data);
           })
           .error((data, status) => {
-            defer.reject(apiError + endpointError);
+            defer.reject(apiError + errorStr);
           });
 
         return defer.promise;
@@ -122,7 +132,7 @@
       return endpointGenerator(endpoint, errorStr);
     };
 
-    parser.parse = (apiData) => {
+    parser.parse = (apiData = {}) => {
       let data = apiData.data,
         included = apiData.included ? apiData.included : [],
         processedData;
@@ -144,14 +154,16 @@
     function createArrayModels(data) {
       let dataModels = [];
 
-      _.each(data, function (datum) {
-        dataModels.push(createObjectModel(datum));
-      });
+      if (data.length) {
+        _.each(data, function (datum) {
+          dataModels.push(createObjectModel(datum));
+        });
+      }
 
       return dataModels;
     }
 
-    function createObjectModel(data) {
+    function createObjectModel(data = {}) {
       let objectModel = angular.copy(data),
         relationships = objectModel.relationships;
 
@@ -235,7 +247,7 @@
 
     return parser;
   }
-  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI'];
+  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI', 'urlGenerator'];
 
   /**
    * @ngdoc overview
@@ -247,6 +259,7 @@
   angular
     .module('parserinator', [])
     .provider('$jsonAPI', $jsonAPIProvider)
-    .factory('jsonAPIParser', jsonAPIParser);
+    .factory('jsonAPIParser', jsonAPIParser)
+    .factory("urlGenerator", urlGenerator);
 
 }());
