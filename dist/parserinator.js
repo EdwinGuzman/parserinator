@@ -26,7 +26,7 @@
           if (!host || !version) {
             return undefined;
           }
-          url = host + "/" + version;
+          url = "" + host + "/" + version;
 
           return validProtocol(host) ? url : "http://" + url;
         }
@@ -81,7 +81,7 @@
 
       for (field in fields) {
         if (fields.hasOwnProperty(field)) {
-          fieldsArray.push("fields[" + field + "]=" + fields[field].join(","));
+          fieldsArray.push("fields[\"" + field + "\"]=" + fields[field].join(","));
         }
       }
 
@@ -90,9 +90,11 @@
 
     function createParams(opts) {
       var includes = opts.includes,
-          fields = opts.fields;
+          fields = opts.fields,
+          fieldParams = createFieldsParams(fields),
+          sparseFields = fieldParams ? "&" + fieldParams : "";
 
-      return "?" + createIncludesParams(includes) + "&" + createFieldsParams(opts.fields);
+      return "?" + createIncludesParams(includes) + sparseFields;
     }
 
     function endpointGenerator(baseEndpoint, errorStr) {
@@ -104,6 +106,7 @@
             endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
         full_api += endpoint + params + jsonp_cb;
+        console.log("Request: " + full_api);
 
         $http.jsonp(full_api, { cache: true }).success(function (data) {
           defer.resolve(data);
