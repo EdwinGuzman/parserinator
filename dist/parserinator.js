@@ -81,7 +81,7 @@
 
       for (field in fields) {
         if (fields.hasOwnProperty(field)) {
-          fieldsArray.push("fields[\"" + field + "\"]=" + fields[field].join(","));
+          fieldsArray.push("fields[" + field + "]=" + fields[field].join(","));
         }
       }
 
