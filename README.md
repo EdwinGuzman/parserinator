@@ -1,14 +1,5 @@
 # Parserinator
 
-At [NYPL](https://github.com/NYPL) we have been adding '-inator' to the end of our projects.
-
-Check out
-* [Locinator](http://nypl.org/locations)
-* [Researchinator](http://nypl.org/research-divisions)
-* Staffinator - a work in progress
-
-We've been working with AngularJS for these past projects and the backend team has adopted the [{json:api}](http://jsonapi.org/) specification for building APIs. This is an AngularJS module to get and parse APIs in the JSON API format.
-
 ### How to use
 
 #### Setup
@@ -47,7 +38,8 @@ The Parserinator has a service to call your API server and get data from endpoin
             throw error;
         });
 
-    // If we want to fetch a specific bike such as /bikes/10, pass in the endpoint to the bikesEndpoint function.
+    // If we want to fetch a specific bike such as /bikes/10,
+    // pass in the endpoint to the bikesEndpoint function.
     var options = {
         endpoint: '10'
     };
@@ -88,7 +80,7 @@ If your JSON API server supports includes and sparse fieldsets, you may include 
 ```
 
 #### Building relationships
-The `jsonAPIParser` service has a method `.parse()` that will build relationships for you based on the API response `data` and `includes` properties. This will simple fetch the relationships that the data objects contain from the `includes` array and attach it to the appropriate data object. Modeling the data thereafter is left to the user.
+The `jsonAPIParser` service has a method `.parse()` that will build relationships for you based on the API response `data` and `includes` properties. This will simply fetch the relationships that the data objects contain from the `includes` array and attach it to the appropriate data object. Modeling the data thereafter is left to the user.
 
 ```javascript
     bikesEndpoint(options)
@@ -137,7 +129,8 @@ You may call the service in your controller but the preference at NYPL is to res
                         "image": ['name', 'height', 'width', 'uri']
                     },
                     options = {
-                        // This endpoint is optional and will fetch /bikes/:id if it that page was reached
+                        // The following properties are optional. If a specific
+                        // parameter is passed, it will be fetched.
                         endpoint: $stateParams.id,
                         includes: includes,
                         fields: fields
@@ -154,3 +147,14 @@ You may call the service in your controller but the preference at NYPL is to res
             }
         }]);
 ```
+
+#### Name
+At [NYPL](https://github.com/NYPL) we have been adding '-inator' to the end of our projects.
+
+Check out
+* [Locinator](http://nypl.org/locations)
+* [Researchinator](http://nypl.org/research-divisions)
+* Staffinator - a work in progress
+
+We've been working with AngularJS for these past projects and the backend team has adopted the [{json:api}](http://jsonapi.org/) specification for building APIs. This is an AngularJS module to get and parse APIs in the JSON API format.
+
