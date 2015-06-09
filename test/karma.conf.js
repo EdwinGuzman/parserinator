@@ -8,10 +8,10 @@ module.exports = function (config) {
     basePath : '../',
     files : [
       'components/angular/angular.js',
-      'components/angular-mocks/*.js',
+      'components/angular-mocks/angular-mocks.js',
       'components/underscore/underscore.js',
-      'parserinator.js',
-      'test/unit/*.js',
+      'dist/parserinator.js',
+      'test/parserinator.spec.js',
     ],
     exclude : [],
     autoWatch : true,
@@ -28,7 +28,7 @@ module.exports = function (config) {
     ],
     reporters: ['progress', 'coverage'],
     preprocessors: {
-      'parserinator.js': ['coverage']
+      'dist/parserinator.js': ['coverage']
     },
     coverageReporter: {
       type: 'html',
