@@ -3,7 +3,15 @@ var gulp = require('gulp'),
   eslint = require('gulp-eslint'),
   uglify = require('gulp-uglify'),
   rename = require('gulp-rename'),
-  babel = require('gulp-babel');
+  babel = require('gulp-babel'),
+  karma = require('karma').server;
+
+gulp.task('test', function () {
+  karma.start({
+    configFile: __dirname + '/test/karma.conf.js',
+    singleRun: false
+  });
+});
 
 // Form the gulp-eslint docs
 gulp.task('lint', function () {

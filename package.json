@@ -7,8 +7,14 @@
     "email": "edwin.gzmn@gmail.com"
   },
   "contributors": [
-    {"name": "Edwin Guzman", "email": "edwin.gzmn@gmail.com"},
-    {"name": "Rafael Hernandez", "email": "rafaelhernandez@nypl.org"}
+    {
+      "name": "Edwin Guzman",
+      "email": "edwin.gzmn@gmail.com"
+    },
+    {
+      "name": "Rafael Hernandez",
+      "email": "rafaelhernandez@nypl.org"
+    }
   ],
   "scripts": {
     "tests": "karma start"
@@ -27,6 +33,7 @@
     "gulp-jshint": "~1.10.0",
     "gulp-uglify": "~1.1.0",
     "gulp-rename": "~1.2.2",
-    "gulp-babel": "^5.1.0"
+    "gulp-babel": "^5.1.0",
+    "gulp-eslint": "^0.13.2"
   }
 }
