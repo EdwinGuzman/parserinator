@@ -92,6 +92,7 @@
    * @requires $http
    * @requires $q
    * @requires $jsonAPI
+   * @requires urlGenerator
    * @description
    * ...
    */
@@ -126,7 +127,7 @@
             endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
         full_api += endpoint + params + jsonp_cb;
-        console.log("Request: " + full_api);
+        // console.log("Request: " + full_api);
 
         $http.jsonp(full_api, { cache: true }).success(function (data) {
           defer.resolve(data);
@@ -167,9 +168,7 @@
       var dataModels = [];
 
       if (data.length) {
-        _.each(data, function (datum) {
-          dataModels.push(createObjectModel(datum));
-        });
+        dataModels = _.map(data, createObjectModel);
       }
 
       return dataModels;
@@ -267,7 +266,7 @@
    * @module parserinator
    * @name parserinator
    * @description
-   * ..
+   * Parse JSON API formatted APIs.
    */
   angular.module("parserinator", []).provider("$jsonAPI", $jsonAPIProvider).factory("jsonAPIParser", jsonAPIParser).factory("urlGenerator", urlGenerator);
 })();
