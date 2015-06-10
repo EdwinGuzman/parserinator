@@ -2,6 +2,11 @@
 
 ### How to use
 
+#### Files
+The parserinator module is written in ES6. A compiled and a minified version can be found in the /dist folder.
+
+To compile, run `gulp`. The default task is set to compile ES6 to ES5 and then to minify the compiled ES5 source.
+
 #### Setup
 Load the module into your app and pass in the API root URL and version:
 ```javascript
@@ -147,6 +152,11 @@ You may call the service in your controller but the preference at NYPL is to res
             }
         }]);
 ```
+
+#### Tests
+Tests are written using Karma, Jasmine, and Gulp to start the process.
+
+Run `gulp test`.
 
 #### Name
 At [NYPL](https://github.com/NYPL) we have been adding '-inator' to the end of our projects.

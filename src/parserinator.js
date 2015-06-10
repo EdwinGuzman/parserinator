@@ -48,7 +48,7 @@
   function urlGenerator() {
     const urlGenerator = {
       createIncludesParams(includes) {
-        return includes ? `include=${includes.join(',')}` : '';
+        return includes ? `include=${includes.join(",")}` : "";
       },
       createFieldsParams(fields) {
         let fieldsArray = [],
@@ -60,7 +60,7 @@
 
         for (field in fields) {
           if (fields.hasOwnProperty(field)) {
-            fieldsArray.push(`fields[${field}]=${fields[field].join(',')}`);
+            fieldsArray.push(`fields[${field}]=${fields[field].join(",")}`);
           }
         }
 
@@ -70,7 +70,7 @@
         let includes = opts.includes,
           fields = opts.fields,
           fieldParams = this.createFieldsParams(fields),
-          sparseFields = fieldParams ? `&${fieldParams}` : ''; 
+          sparseFields = fieldParams ? `&${fieldParams}` : ""; 
 
         return "?" + this.createIncludesParams(includes) + sparseFields;
       }
@@ -86,13 +86,14 @@
    * @requires $http
    * @requires $q
    * @requires $jsonAPI
+   * @requires urlGenerator
    * @description
    * ...
    */
   function jsonAPIParser($http, $q, $jsonAPI, urlGenerator) {
     const api = $jsonAPI.full_api_url,
-      jsonp_cb = '&callback=JSON_CALLBACK',
-      apiError = 'Could not reach API: ';
+      jsonp_cb = "&callback=JSON_CALLBACK",
+      apiError = "Could not reach API: ";
 
     let parser = {},
       findInIncludes;
@@ -100,8 +101,8 @@
     function includedGenerator(included = []) {
       return data => {
         return _.findWhere(included, {
-          'id': data.id,
-          'type': data.type
+          "id": data.id,
+          "type": data.type
         });
       };
     };
@@ -109,12 +110,12 @@
     function endpointGenerator(baseEndpoint, errorStr = 'API Error') {
       return (opts = {}) => {
         let defer = $q.defer(),
-          full_api = api + '/' + baseEndpoint,
+          full_api = api + "/" + baseEndpoint,
           params = urlGenerator.createParams(opts),
-          endpoint = opts.endpoint ? '/' + opts.endpoint : '';
+          endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
         full_api += endpoint + params + jsonp_cb;
-        console.log("Request: " + full_api);
+        // console.log("Request: " + full_api);
 
         $http.jsonp(full_api, {cache: true})
           .success(data => {
@@ -155,9 +156,7 @@
       let dataModels = [];
 
       if (data.length) {
-        _.each(data, function (datum) {
-          dataModels.push(createObjectModel(datum));
-        });
+        dataModels = _.map(data, createObjectModel);
       }
 
       return dataModels;
@@ -214,7 +213,7 @@
 
       for (let rel in relationships) {
         if (relationships.hasOwnProperty(rel)) {
-          linkageProperty = relationships[rel]['data'];
+          linkageProperty = relationships[rel]["data"];
 
           // If it contains a linkage object property
           if (linkageProperty) {
@@ -247,19 +246,19 @@
 
     return parser;
   }
-  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI', 'urlGenerator'];
+  jsonAPIParser.$inject = ["$http", "$q", "$jsonAPI", "urlGenerator"];
 
   /**
    * @ngdoc overview
    * @module parserinator
    * @name parserinator
    * @description
-   * ..
+   * Parse JSON API formatted APIs.
    */
   angular
-    .module('parserinator', [])
-    .provider('$jsonAPI', $jsonAPIProvider)
-    .factory('jsonAPIParser', jsonAPIParser)
+    .module("parserinator", [])
+    .provider("$jsonAPI", $jsonAPIProvider)
+    .factory("jsonAPIParser", jsonAPIParser)
     .factory("urlGenerator", urlGenerator);
 
 }());

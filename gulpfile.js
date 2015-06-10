@@ -15,7 +15,7 @@ gulp.task('test', function () {
 
 // Form the gulp-eslint docs
 gulp.task('lint', function () {
-  return gulp.src(['dest/parserinator.js'])
+  return gulp.src(['dist/parserinator.js'])
     // eslint() attaches the lint output to the eslint property
     // of the file object so it can be used by other modules.
     .pipe(eslint())
