@@ -96,7 +96,8 @@
       apiError = "Could not reach API: ";
 
     let parser = {},
-      findInIncludes;
+      findInIncludes,
+      getObjectsOfType;
 
     function includedGenerator(included = []) {
       return data => {
@@ -107,6 +108,12 @@
       };
     };
 
+    function findTypesGenerator(included = []) {
+      return type => {
+        return _.filter(included, obj => obj.type === type);
+      }
+    }
+
     function endpointGenerator(baseEndpoint, errorStr = 'API Error') {
       return (opts = {}) => {
         let defer = $q.defer(),
@@ -115,7 +122,7 @@
           endpoint = opts.endpoint ? "/" + opts.endpoint : "";
 
         full_api += endpoint + params + jsonp_cb;
-        // console.log("Request: " + full_api);
+        console.log("Request: " + full_api);
 
         $http.jsonp(full_api, {cache: true})
           .success(data => {
@@ -150,6 +157,52 @@
       }
 
       return processedData;
+    };
+
+    parser.createHierarchy = (included = [], type = '') => {
+      let parents = [],
+        flatArr,
+        parentObj,
+        parentAlreadyAdded;
+
+      getObjectsOfType = findTypesGenerator(included);
+      findInIncludes = includedGenerator(included);
+      flatArr = getObjectsOfType(type);
+
+       _.each(flatArr, function (obj) {
+        if (obj.relationships && obj.relationships.parent) {
+          parentObj = findInIncludes(obj.relationships.parent.data);
+
+          // found parent in the included array
+          if (parentObj) {
+            parentAlreadyAdded = _.findWhere(parents, {id: parentObj.id});
+
+            // If the parent object doesn't have a children array, add it
+            if (!parentObj.children) {
+              parentObj.children = [];
+            }
+            
+            if (!_.findWhere(parentObj.children, { id: obj.id })) {
+              parentObj.children.push(obj);
+            }
+
+            parentObj.children.push(obj);
+
+            // Check to see if the parent object already exists
+            // in the parents array
+            if (!parentAlreadyAdded) {
+              parents.push(parentObj);
+            }
+          }
+        } else {
+          parentAlreadyAdded = _.findWhere(parents, {id: obj.id});
+          if (!parentAlreadyAdded) {
+            parents.push(obj);
+          }
+        }
+      });
+
+      return parents;
     };
 
     function createArrayModels(data) {
@@ -196,6 +249,9 @@
         dataObj = constructObjFromIncluded(linkageProp);
 
         if (dataObj) {
+          if (dataObj.relationships) {
+            dataObj = createRelationships(dataObj, dataObj.relationships);
+          }
           includedDataArray.push(dataObj);
         } else {
           makeHTTPRequest();
