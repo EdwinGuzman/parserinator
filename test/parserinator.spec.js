@@ -41,6 +41,25 @@ describe("Parserinator", function () {
               "self": "http://ilovebikes.com/v1.0/bikes/links/image"
             }
           },
+          "tags": {
+            "data": [
+              {
+                "id": "12",
+                "type": "tag"
+              },
+              {
+                "id": "24",
+                "type": "tag"
+              },
+              {
+                "id": "25",
+                "type": "tag"
+              }
+            ],
+            "links": {
+              "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+            }
+          }
         }
       },
       "meta": [],
@@ -85,6 +104,36 @@ describe("Parserinator", function () {
           "links": {
             "self": "http://ilovebikes.com/v1.0/images/1232"
           }
+        },
+        {
+          "id": "12",
+          "type": "tag",
+          "attributes": {
+            "name": "Road"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/12"
+          }
+        },
+        {
+          "id": "24",
+          "type": "tag",
+          "attributes": {
+            "name": "Felt"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/24"
+          }
+        },
+        {
+          "id": "25",
+          "type": "tag",
+          "attributes": {
+            "name": "Racing"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/25"
+          }
         }
       ]
     },
@@ -106,6 +155,25 @@ describe("Parserinator", function () {
               "links": {
                 "self": "http://ilovebikes.com/v1.0/bikes/links/derailleur"
               }
+            },
+            "tags": {
+              "data": [
+                {
+                  "id": "12",
+                  "type": "tag"
+                },
+                {
+                  "id": "24",
+                  "type": "tag"
+                },
+                {
+                  "id": "25",
+                  "type": "tag"
+                }
+              ],
+              "links": {
+                "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+              }
             }
           }
         },
@@ -125,6 +193,21 @@ describe("Parserinator", function () {
               "links": {
                 "self": "http://ilovebikes.com/v1.0/bikes/links/image"
               }
+            },
+            "tags": {
+              "data": [
+                {
+                  "id": "12",
+                  "type": "tag"
+                },
+                {
+                  "id": "25",
+                  "type": "tag"
+                }
+              ],
+              "links": {
+                "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+              }
             }
           }
         },
@@ -143,6 +226,21 @@ describe("Parserinator", function () {
               },
               "links": {
                 "self": "http://ilovebikes.com/v1.0/bikes/links/image"
+              }
+            },
+            "tags": {
+              "data": [
+                {
+                  "id": "12",
+                  "type": "tag"
+                },
+                {
+                  "id": "25",
+                  "type": "tag"
+                }
+              ],
+              "links": {
+                "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
               }
             }
           }
@@ -184,6 +282,36 @@ describe("Parserinator", function () {
           },
           "links": {
             "self": "http://ilovebikes.com/v1.0/images/1235"
+          }
+        },
+        {
+          "id": "12",
+          "type": "tag",
+          "attributes": {
+            "name": "Road"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/12"
+          }
+        },
+        {
+          "id": "24",
+          "type": "tag",
+          "attributes": {
+            "name": "Felt"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/24"
+          }
+        },
+        {
+          "id": "25",
+          "type": "tag",
+          "attributes": {
+            "name": "Racing"
+          },
+          "links": {
+            "self": "http://ilovebikes.com/v1.0/tags/25"
           }
         }
       ]
@@ -500,6 +628,25 @@ describe("Parserinator", function () {
               "links": {
                 "self": "http://ilovebikes.com/v1.0/bikes/links/derailleur"
               }
+            },
+            "tags": {
+              "data": [
+                {
+                  "id": "12",
+                  "type": "tag"
+                },
+                {
+                  "id": "24",
+                  "type": "tag"
+                },
+                {
+                  "id": "25",
+                  "type": "tag"
+                }
+              ],
+              "links": {
+                "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+              }
             }
           },
           "derailleur": {
@@ -530,6 +677,25 @@ describe("Parserinator", function () {
               },
               "links": {
                 "self": "http://ilovebikes.com/v1.0/bikes/links/derailleur"
+              }
+            },
+            "tags": {
+              "data": [
+                {
+                  "id": "12",
+                  "type": "tag"
+                },
+                {
+                  "id": "24",
+                  "type": "tag"
+                },
+                {
+                  "id": "25",
+                  "type": "tag"
+                }
+              ],
+              "links": {
+                "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
               }
             }
           }
@@ -563,6 +729,25 @@ describe("Parserinator", function () {
                     "links": {
                       "self": "http://ilovebikes.com/v1.0/bikes/links/derailleur"
                     }
+                  },
+                  "tags": {
+                    "data": [
+                      {
+                        "id": "12",
+                        "type": "tag"
+                      },
+                      {
+                        "id": "24",
+                        "type": "tag"
+                      },
+                      {
+                        "id": "25",
+                        "type": "tag"
+                      }
+                    ],
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+                    }
                   }
                 },
                 "derailleur": {
@@ -575,7 +760,39 @@ describe("Parserinator", function () {
                   "links": {
                     "self": "http://ilovebikes.com/v1.0/derailleur/1234"
                   }
-                }
+                },
+                "tag": [
+                  {
+                    "id": "12",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Road"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/12"
+                    }
+                  },
+                  {
+                    "id": "24",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Felt"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/24"
+                    }
+                  },
+                  {
+                    "id": "25",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Racing"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/25"
+                    }
+                  }
+                ]
               },
               {
                 "id": "2",
@@ -593,6 +810,21 @@ describe("Parserinator", function () {
                     "links": {
                       "self": "http://ilovebikes.com/v1.0/bikes/links/image"
                     }
+                  },
+                  "tags": {
+                    "data": [
+                      {
+                        "id": "12",
+                        "type": "tag"
+                      },
+                      {
+                        "id": "25",
+                        "type": "tag"
+                      }
+                    ],
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+                    }
                   }
                 },
                 "image": {
@@ -607,7 +839,29 @@ describe("Parserinator", function () {
                   "links": {
                     "self": "http://ilovebikes.com/v1.0/images/1230"
                   }
-                }
+                },
+                "tag": [
+                  {
+                    "id": "12",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Road"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/12"
+                    }
+                  },
+                  {
+                    "id": "25",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Racing"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/25"
+                    }
+                  }
+                ]
               },
               {
                 "id": "3",
@@ -625,6 +879,21 @@ describe("Parserinator", function () {
                     "links": {
                       "self": "http://ilovebikes.com/v1.0/bikes/links/image"
                     }
+                  },
+                  "tags": {
+                    "data": [
+                      {
+                        "id": "12",
+                        "type": "tag"
+                      },
+                      {
+                        "id": "25",
+                        "type": "tag"
+                      }
+                    ],
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+                    }
                   }
                 },
                 "image": {
@@ -639,7 +908,29 @@ describe("Parserinator", function () {
                   "links": {
                     "self": "http://ilovebikes.com/v1.0/images/1235"
                   }
-                }
+                },
+                "tag": [
+                  {
+                    "id": "12",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Road"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/12"
+                    }
+                  },
+                  {
+                    "id": "25",
+                    "type": "tag",
+                    "attributes": {
+                      "name": "Racing"
+                    },
+                    "links": {
+                      "self": "http://ilovebikes.com/v1.0/tags/25"
+                    }
+                  }
+                ]
               }
             ]
           };
@@ -685,6 +976,25 @@ describe("Parserinator", function () {
                     "self": "http://ilovebikes.com/v1.0/bikes/links/image"
                   }
                 },
+                "tags": {
+                  "data": [
+                    {
+                      "id": "12",
+                      "type": "tag"
+                    },
+                    {
+                      "id": "24",
+                      "type": "tag"
+                    },
+                    {
+                      "id": "25",
+                      "type": "tag"
+                    }
+                  ],
+                  "links": {
+                    "self": "http://ilovebikes.com/v1.0/bikes/1/tags"
+                  }
+                }
               },
               "derailleur": {
                 "type": "derailleur",
@@ -720,7 +1030,39 @@ describe("Parserinator", function () {
                 "links": {
                   "self": "http://ilovebikes.com/v1.0/images/1232"
                 }
-              }
+              },
+              "tag": [
+                {
+                  "id": "12",
+                  "type": "tag",
+                  "attributes": {
+                    "name": "Road"
+                  },
+                  "links": {
+                    "self": "http://ilovebikes.com/v1.0/tags/12"
+                  }
+                },
+                {
+                  "id": "24",
+                  "type": "tag",
+                  "attributes": {
+                    "name": "Felt"
+                  },
+                  "links": {
+                    "self": "http://ilovebikes.com/v1.0/tags/24"
+                  }
+                },
+                {
+                  "id": "25",
+                  "type": "tag",
+                  "attributes": {
+                    "name": "Racing"
+                  },
+                  "links": {
+                    "self": "http://ilovebikes.com/v1.0/tags/25"
+                  }
+                }
+              ]
             }
           };
 

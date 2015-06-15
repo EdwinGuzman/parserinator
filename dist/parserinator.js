@@ -205,8 +205,6 @@
               parentObj.children.push(obj);
             }
 
-            parentObj.children.push(obj);
-
             // Check to see if the parent object already exists
             // in the parents array
             if (!parentAlreadyAdded) {

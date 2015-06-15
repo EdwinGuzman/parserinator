@@ -109,9 +109,7 @@
     };
 
     function findTypesGenerator(included = []) {
-      return type => {
-        return _.filter(included, obj => obj.type === type);
-      }
+      return type => _.filter(included, obj => obj.type === type);
     }
 
     function endpointGenerator(baseEndpoint, errorStr = 'API Error') {
@@ -185,8 +183,6 @@
             if (!_.findWhere(parentObj.children, { id: obj.id })) {
               parentObj.children.push(obj);
             }
-
-            parentObj.children.push(obj);
 
             // Check to see if the parent object already exists
             // in the parents array
