@@ -163,6 +163,10 @@
         parentObj,
         parentAlreadyAdded;
 
+      if (!included || !type) {
+        return;
+      }
+
       getObjectsOfType = findTypesGenerator(included);
       findInIncludes = includedGenerator(included);
       flatArr = getObjectsOfType(type);
