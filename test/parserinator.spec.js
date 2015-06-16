@@ -33,7 +33,7 @@ describe('Parserinator', function () {
             }
           },
           'image': {
-            'data': {1
+            'data': {
               'type': 'image',
               'id': '1232'
             },

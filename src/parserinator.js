@@ -6,28 +6,19 @@
   /** @namespace $jsonAPIProvider */
   function $jsonAPIProvider() {
     const options = {
-        api_root: null,
-        api_version: null
-      };
+      api_root: null,
+      api_version: null
+    };
 
     this.setOptions = opts => {
       angular.extend(options, opts);
     };
 
     this.$get = [() => {
-      // Should change to const since references
-      // do not mutate versus let.
       const provider = {
-        generateApiUrl(options) {
-          /* Here I would use object destructuring
-          * const {api_root: host, api_version: version} = options;
-          * Saves from creating temp references, see
-          * https://github.com/airbnb/javascript#objects
-          * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
-          */
-          let host = options.api_root,
-            version = options.api_version,
-            url;
+        generateApiUrl(options = {}) {
+          const {api_root: host, api_version: version} = options;
+          let url;
 
           if (!host || !version) {
             return undefined;
@@ -39,7 +30,7 @@
       };
       provider.full_api_url = provider.generateApiUrl(options);
 
-      function validProtocol(host = "") {
+      function validProtocol(host = '') {
         return host.indexOf('http://') === 0 || host.indexOf('https://') === 0;
       }
 
