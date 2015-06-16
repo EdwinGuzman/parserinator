@@ -15,8 +15,16 @@
     };
 
     this.$get = [() => {
-      let provider = {
+      // Should change to const since references
+      // do not mutate versus let.
+      const provider = {
         generateApiUrl(options) {
+          /* Here I would use object destructuring
+          * const {api_root: host, api_version: version} = options;
+          * Saves from creating temp references, see
+          * https://github.com/airbnb/javascript#objects
+          * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment
+          */
           let host = options.api_root,
             version = options.api_version,
             url;
@@ -32,7 +40,7 @@
       provider.full_api_url = provider.generateApiUrl(options);
 
       function validProtocol(host = "") {
-        return host.indexOf("http://") === 0 || host.indexOf("https://") === 0;
+        return host.indexOf('http://') === 0 || host.indexOf('https://') === 0;
       }
 
       return provider;
@@ -48,23 +56,23 @@
   function urlGenerator() {
     const urlGenerator = {
       createIncludesParams(includes) {
-        return includes ? `include=${includes.join(",")}` : "";
+        return includes ? `include=${includes.join(',')}` : '';
       },
       createFieldsParams(fields) {
         let fieldsArray = [],
           field;
 
         if (!fields) {
-          return "";
+          return '';
         }
 
         for (field in fields) {
           if (fields.hasOwnProperty(field)) {
-            fieldsArray.push(`fields[${field}]=${fields[field].join(",")}`);
+            fieldsArray.push(`fields[${field}]=${fields[field].join(',')}`);
           }
         }
 
-        return fieldsArray.join("&");
+        return fieldsArray.join('&');
       },
       createParams(opts = {}) {
         let includes = opts.includes,
@@ -72,7 +80,7 @@
           fieldParams = this.createFieldsParams(fields),
           sparseFields = fieldParams ? `&${fieldParams}` : ""; 
 
-        return "?" + this.createIncludesParams(includes) + sparseFields;
+        return '?' + this.createIncludesParams(includes) + sparseFields;
       }
     };
 
@@ -91,9 +99,11 @@
    * ...
    */
   function jsonAPIParser($http, $q, $jsonAPI, urlGenerator) {
+    // Changing all string declarations to single quotes
+    // As per airbnb recommendations https://github.com/airbnb/javascript#strings
     const api = $jsonAPI.full_api_url,
-      jsonp_cb = "&callback=JSON_CALLBACK",
-      apiError = "Could not reach API: ";
+      jsonp_cb = '&callback=JSON_CALLBACK',
+      apiError = 'Could not reach API: ';
 
     let parser = {},
       findInIncludes,
@@ -102,8 +112,8 @@
     function includedGenerator(included = []) {
       return data => {
         return _.findWhere(included, {
-          "id": data.id,
-          "type": data.type
+          'id': data.id,
+          'type': data.type
         });
       };
     };
@@ -115,12 +125,12 @@
     function endpointGenerator(baseEndpoint, errorStr = 'API Error') {
       return (opts = {}) => {
         let defer = $q.defer(),
-          full_api = api + "/" + baseEndpoint,
+          full_api = api + '/' + baseEndpoint,
           params = urlGenerator.createParams(opts),
-          endpoint = opts.endpoint ? "/" + opts.endpoint : "";
+          endpoint = opts.endpoint ? '/' + opts.endpoint : '';
 
         full_api += endpoint + params + jsonp_cb;
-        console.log("Request: " + full_api);
+        console.log('Request: ' + full_api);
 
         $http.jsonp(full_api, {cache: true})
           .success(data => {
@@ -184,7 +194,7 @@
               parentObj.children = [];
             }
             
-            if (!_.findWhere(parentObj.children, { id: obj.id })) {
+            if (!_.findWhere(parentObj.children, {id: obj.id})) {
               parentObj.children.push(obj);
             }
 
@@ -269,7 +279,7 @@
 
       for (let rel in relationships) {
         if (relationships.hasOwnProperty(rel)) {
-          linkageProperty = relationships[rel]["data"];
+          linkageProperty = relationships[rel]['data'];
 
           // If it contains a linkage object property
           if (linkageProperty) {
@@ -302,7 +312,7 @@
 
     return parser;
   }
-  jsonAPIParser.$inject = ["$http", "$q", "$jsonAPI", "urlGenerator"];
+  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI', 'urlGenerator'];
 
   /**
    * @ngdoc overview
@@ -312,9 +322,9 @@
    * Parse JSON API formatted APIs.
    */
   angular
-    .module("parserinator", [])
-    .provider("$jsonAPI", $jsonAPIProvider)
-    .factory("jsonAPIParser", jsonAPIParser)
-    .factory("urlGenerator", urlGenerator);
+    .module('parserinator', [])
+    .provider('$jsonAPI', $jsonAPIProvider)
+    .factory('jsonAPIParser', jsonAPIParser)
+    .factory('urlGenerator', urlGenerator);
 
 }());
