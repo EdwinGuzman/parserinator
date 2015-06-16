@@ -1,7 +1,7 @@
 /*jslint indent: 2, maxlen: 80, unparam: true */
 /*globals angular */
 
-"use strict";
+'use strict';
 
 ;(function () {
 
@@ -18,25 +18,27 @@
 
     this.$get = [function () {
       var provider = {
-        generateApiUrl: function generateApiUrl(options) {
-          var host = options.api_root,
-              version = options.api_version,
-              url = undefined;
+        generateApiUrl: function generateApiUrl() {
+          var options = arguments[0] === undefined ? {} : arguments[0];
+          var host = options.api_root;
+          var version = options.api_version;
+
+          var url = undefined;
 
           if (!host || !version) {
             return undefined;
           }
-          url = "" + host + "/" + version;
+          url = '' + host + '/' + version;
 
-          return validProtocol(host) ? url : "http://" + url;
+          return validProtocol(host) ? url : 'http://' + url;
         }
       };
       provider.full_api_url = provider.generateApiUrl(options);
 
       function validProtocol() {
-        var host = arguments[0] === undefined ? "" : arguments[0];
+        var host = arguments[0] === undefined ? '' : arguments[0];
 
-        return host.indexOf("http://") === 0 || host.indexOf("https://") === 0;
+        return host.indexOf('http://') === 0 || host.indexOf('https://') === 0;
       }
 
       return provider;
@@ -52,23 +54,23 @@
   function urlGenerator() {
     var urlGenerator = {
       createIncludesParams: function createIncludesParams(includes) {
-        return includes ? "include=" + includes.join(",") : "";
+        return includes ? 'include=' + includes.join(',') : '';
       },
       createFieldsParams: function createFieldsParams(fields) {
         var fieldsArray = [],
             field = undefined;
 
         if (!fields) {
-          return "";
+          return '';
         }
 
         for (field in fields) {
           if (fields.hasOwnProperty(field)) {
-            fieldsArray.push("fields[" + field + "]=" + fields[field].join(","));
+            fieldsArray.push('fields[' + field + ']=' + fields[field].join(','));
           }
         }
 
-        return fieldsArray.join("&");
+        return fieldsArray.join('&');
       },
       createParams: function createParams() {
         var opts = arguments[0] === undefined ? {} : arguments[0];
@@ -76,9 +78,9 @@
         var includes = opts.includes,
             fields = opts.fields,
             fieldParams = this.createFieldsParams(fields),
-            sparseFields = fieldParams ? "&" + fieldParams : "";
+            sparseFields = fieldParams ? '&' + fieldParams : '';
 
-        return "?" + this.createIncludesParams(includes) + sparseFields;
+        return '?' + this.createIncludesParams(includes) + sparseFields;
       }
     };
 
@@ -97,37 +99,50 @@
    * ...
    */
   function jsonAPIParser($http, $q, $jsonAPI, urlGenerator) {
+    // Changing all string declarations to single quotes
+    // As per airbnb recommendations https://github.com/airbnb/javascript#strings
     var api = $jsonAPI.full_api_url,
-        jsonp_cb = "&callback=JSON_CALLBACK",
-        apiError = "Could not reach API: ";
+        jsonp_cb = '&callback=JSON_CALLBACK',
+        apiError = 'Could not reach API: ';
 
     var parser = {},
-        findInIncludes = undefined;
+        findInIncludes = undefined,
+        getObjectsOfType = undefined;
 
     function includedGenerator() {
       var included = arguments[0] === undefined ? [] : arguments[0];
 
       return function (data) {
         return _.findWhere(included, {
-          "id": data.id,
-          "type": data.type
+          'id': data.id,
+          'type': data.type
         });
       };
     };
 
+    function findTypesGenerator() {
+      var included = arguments[0] === undefined ? [] : arguments[0];
+
+      return function (type) {
+        return _.filter(included, function (obj) {
+          return obj.type === type;
+        });
+      };
+    }
+
     function endpointGenerator(baseEndpoint) {
-      var errorStr = arguments[1] === undefined ? "API Error" : arguments[1];
+      var errorStr = arguments[1] === undefined ? 'API Error' : arguments[1];
 
       return function () {
         var opts = arguments[0] === undefined ? {} : arguments[0];
 
         var defer = $q.defer(),
-            full_api = api + "/" + baseEndpoint,
+            full_api = api + '/' + baseEndpoint,
             params = urlGenerator.createParams(opts),
-            endpoint = opts.endpoint ? "/" + opts.endpoint : "";
+            endpoint = opts.endpoint ? '/' + opts.endpoint : '';
 
         full_api += endpoint + params + jsonp_cb;
-        // console.log("Request: " + full_api);
+        console.log('Request: ' + full_api);
 
         $http.jsonp(full_api, { cache: true }).success(function (data) {
           defer.resolve(data);
@@ -162,6 +177,57 @@
       }
 
       return processedData;
+    };
+
+    parser.createHierarchy = function () {
+      var included = arguments[0] === undefined ? [] : arguments[0];
+      var type = arguments[1] === undefined ? '' : arguments[1];
+
+      var parents = [],
+          flatArr = undefined,
+          parentObj = undefined,
+          parentAlreadyAdded = undefined;
+
+      if (!included || !type) {
+        return;
+      }
+
+      getObjectsOfType = findTypesGenerator(included);
+      findInIncludes = includedGenerator(included);
+      flatArr = getObjectsOfType(type);
+
+      _.each(flatArr, function (obj) {
+        if (obj.relationships && obj.relationships.parent) {
+          parentObj = findInIncludes(obj.relationships.parent.data);
+
+          // found parent in the included array
+          if (parentObj) {
+            parentAlreadyAdded = _.findWhere(parents, { id: parentObj.id });
+
+            // If the parent object doesn't have a children array, add it
+            if (!parentObj.children) {
+              parentObj.children = [];
+            }
+
+            if (!_.findWhere(parentObj.children, { id: obj.id })) {
+              parentObj.children.push(obj);
+            }
+
+            // Check to see if the parent object already exists
+            // in the parents array
+            if (!parentAlreadyAdded) {
+              parents.push(parentObj);
+            }
+          }
+        } else {
+          parentAlreadyAdded = _.findWhere(parents, { id: obj.id });
+          if (!parentAlreadyAdded) {
+            parents.push(obj);
+          }
+        }
+      });
+
+      return parents;
     };
 
     function createArrayModels(data) {
@@ -209,6 +275,9 @@
         dataObj = constructObjFromIncluded(linkageProp);
 
         if (dataObj) {
+          if (dataObj.relationships) {
+            dataObj = createRelationships(dataObj, dataObj.relationships);
+          }
           includedDataArray.push(dataObj);
         } else {
           makeHTTPRequest();
@@ -226,7 +295,7 @@
 
       for (var rel in relationships) {
         if (relationships.hasOwnProperty(rel)) {
-          linkageProperty = relationships[rel]["data"];
+          linkageProperty = relationships[rel]['data'];
 
           // If it contains a linkage object property
           if (linkageProperty) {
@@ -259,7 +328,7 @@
 
     return parser;
   }
-  jsonAPIParser.$inject = ["$http", "$q", "$jsonAPI", "urlGenerator"];
+  jsonAPIParser.$inject = ['$http', '$q', '$jsonAPI', 'urlGenerator'];
 
   /**
    * @ngdoc overview
@@ -268,7 +337,7 @@
    * @description
    * Parse JSON API formatted APIs.
    */
-  angular.module("parserinator", []).provider("$jsonAPI", $jsonAPIProvider).factory("jsonAPIParser", jsonAPIParser).factory("urlGenerator", urlGenerator);
+  angular.module('parserinator', []).provider('$jsonAPI', $jsonAPIProvider).factory('jsonAPIParser', jsonAPIParser).factory('urlGenerator', urlGenerator);
 })();
 
 // console.log('make http request?');
