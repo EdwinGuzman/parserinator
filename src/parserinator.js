@@ -180,19 +180,23 @@
           if (parentObj) {
             parentAlreadyAdded = _.findWhere(parents, {id: parentObj.id});
 
-            // If the parent object doesn't have a children array, add it
-            if (!parentObj.children) {
-              parentObj.children = [];
-            }
-            
-            if (!_.findWhere(parentObj.children, {id: obj.id})) {
-              parentObj.children.push(obj);
-            }
+            if (parentAlreadyAdded) {
+              // If the parent object doesn't have a children array, add it
+              if (!parentObj.children) {
+                parentObj.children = [];
+              }
+              
+              if (!_.findWhere(parentObj.children, {id: obj.id})) {
+                parentObj.children.push(obj);
+              }
 
-            // Check to see if the parent object already exists
-            // in the parents array
-            if (!parentAlreadyAdded) {
-              parents.push(parentObj);
+              // Check to see if the parent object already exists
+              // in the parents array
+              if (!parentAlreadyAdded) {
+                parents.push(parentObj);
+              }
+            } else {
+              parents.push(obj);
             }
           }
         } else {

@@ -12,12 +12,14 @@ module.exports = function (config) {
       'components/underscore/underscore.js',
       'dist/parserinator.js',
       'test/parserinator.spec.js',
+      { pattern: 'test/mock/*.json', watched: true, served: true, included: false }
     ],
     exclude : [],
     autoWatch : true,
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-jquery', 'jasmine'],
     browsers : ['Chrome'],
     plugins : [
+      'karma-jasmine-jquery',
       'karma-junit-reporter',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
