@@ -10,25 +10,43 @@ module.exports = function (config) {
       'components/angular/angular.js',
       'components/angular-mocks/angular-mocks.js',
       'components/underscore/underscore.js',
-      'dist/parserinator.js',
+      'src/parserinator.js',
       'test/parserinator.spec.js',
+      { pattern: 'test/mock/*.json', watched: true, served: true, included: false }
     ],
-    exclude : [],
+    exclude : [
+      'node_modules'
+    ],
     autoWatch : true,
-    frameworks: ['jasmine'],
+    frameworks: ['jasmine-jquery', 'jasmine'],
     browsers : ['Chrome'],
     plugins : [
+      'karma-jasmine-jquery',
       'karma-junit-reporter',
       'karma-chrome-launcher',
       'karma-firefox-launcher',
       'karma-script-launcher',
       'karma-jasmine',
       'karma-ng-html2js-preprocessor',
-      'karma-coverage'
+      'karma-coverage',
+      'karma-babel-preprocessor'
     ],
     reporters: ['progress', 'coverage'],
     preprocessors: {
-      'dist/parserinator.js': ['coverage']
+      'src/*.js': ['babel'],
+      'test/*.spec.js': ['babel'],
+      'src/parserinator.js': ['coverage']
+    },
+    babelPreprocessor: {
+      options: {
+        sourceMap: 'inline'
+      },
+      filename: function (file) {
+        return file.originalPath.replace(/\.js$/, '.es5.js');
+      },
+      sourceFileName: function (file) {
+        return file.originalPath;
+      }
     },
     coverageReporter: {
       type: 'html',
