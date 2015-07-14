@@ -5,22 +5,27 @@ module.exports = function (config) {
   'use strict';
 
   config.set({
-    basePath : '../',
-    files : [
+    basePath: '../',
+    files: [
       'components/angular/angular.js',
       'components/angular-mocks/angular-mocks.js',
       'components/underscore/underscore.js',
       'src/parserinator.js',
       'test/parserinator.spec.js',
-      { pattern: 'test/mock/*.json', watched: true, served: true, included: false }
+      {
+        pattern: 'test/mock/*.json',
+        watched: true,
+        served: true,
+        included: false
+      }
     ],
-    exclude : [
+    exclude: [
       'node_modules'
     ],
-    autoWatch : true,
+    autoWatch: true,
     frameworks: ['jasmine-jquery', 'jasmine'],
-    browsers : ['Chrome'],
-    plugins : [
+    browsers: ['Chrome'],
+    plugins: [
       'karma-jasmine-jquery',
       'karma-junit-reporter',
       'karma-chrome-launcher',
@@ -36,17 +41,6 @@ module.exports = function (config) {
       'src/*.js': ['babel'],
       'test/*.spec.js': ['babel'],
       'src/parserinator.js': ['coverage']
-    },
-    babelPreprocessor: {
-      options: {
-        sourceMap: 'inline'
-      },
-      filename: function (file) {
-        return file.originalPath.replace(/\.js$/, '.es5.js');
-      },
-      sourceFileName: function (file) {
-        return file.originalPath;
-      }
     },
     coverageReporter: {
       type: 'html',
